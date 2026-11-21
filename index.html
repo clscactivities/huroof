@@ -135,6 +135,17 @@ main{max-width:1240px;margin:0 auto;padding:18px max(16px,env(safe-area-inset-ri
 .board{position:relative;direction:ltr}
 .hex{position:absolute;width:var(--w);height:calc(var(--w)*1.1547);clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);background:var(--ink);border:0;padding:0;display:flex;align-items:center;justify-content:center;transition:transform .15s}
 .hex::before{content:"";position:absolute;inset:4px;clip-path:inherit;background:var(--cell);transition:background .35s}
+.hex.lv-e::before{background:#F1EBFC}.hex.lv-m::before{background:#C9B3F5}.hex.lv-h::before{background:#6D28D9}
+.hex.lv-e span,.hex.lv-m span{color:#3A1577}.hex.lv-h span{color:#FFFFFF}
+.hex .pt{position:absolute;bottom:15%;left:0;right:0;display:flex;justify-content:center;gap:calc(var(--w)*.05);pointer-events:none}
+.hex .pt i{width:calc(var(--w)*.065);height:calc(var(--w)*.065);border-radius:50%;background:#3A1577;opacity:.55}
+.hex.lv-h .pt i{background:#FFFFFF;opacity:.8}
+.hex.g .pt i{background:#0B2B1F}.hex.o .pt i{background:#2B1300}
+.legend{display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center;justify-content:center;font-weight:700;font-size:14px}
+.legend .k{display:inline-flex;align-items:center;gap:8px}
+.legend .sw{width:22px;height:25px;clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);background:#1B1033;position:relative}
+.legend .sw::after{content:"";position:absolute;inset:2px;clip-path:inherit;background:var(--c)}
+.legend .p{color:var(--muted);font-weight:600}
 .hex span{position:relative;font-family:var(--display);font-weight:800;font-size:calc(var(--w)*.42);color:var(--cell-ink);line-height:1;transition:color .35s}
 .hex:hover:not(.g):not(.o){transform:scale(1.05)}
 .hex.g::before{background:var(--green)} .hex.o::before{background:var(--orange)}
@@ -383,28 +394,9 @@ body.screen .slot .nm{font-size:clamp(13px,1.4vw,20px)}
       <div class="wait" id="lg-wait" hidden></div>
       <p class="msg" id="lg-msg" role="status"></p>
       <button type="button" class="btn ghost" id="g-switch" hidden>الدخول بحساب ثاني</button>
-      <div class="divider">للحضور</div>
-      <button type="button" class="btn ghost" id="go-checkin">أنا حاضر — سجّل حضوري</button>
     </div>
   </div>
 
-  <!-- public check-in -->
-  <div class="center" id="v-checkin" hidden>
-    <div class="lcard">
-      <div class="logo" aria-hidden="true"><div class="el"><i>6</i><b>ح</b></div><div class="el gA"><i>10</i><b>ر</b></div><div class="el gB"><i>27</i><b>و</b></div><div class="el" style="--c:var(--vio)"><i>20</i><b>ف</b></div></div>
-      <h1>سجّل حضورك</h1>
-      <p class="sub">حروف مع المختبرات · دوري المختبرات</p>
-      <form id="ci-form" novalidate>
-        <div class="field"><label for="ci-name">الاسم الثلاثي</label><input id="ci-name" autocomplete="off" maxlength="60" placeholder="مثال: سارة محمد العتيبي" required></div>
-        <div class="field"><label for="ci-club">النادي</label><input id="ci-club" list="club-list" autocomplete="off" maxlength="60" placeholder="اختر ناديك أو اكتب اسمه" required></div>
-        <div class="chips" id="ci-chips" aria-label="أندية مقترحة"></div>
-        <button type="submit" class="btn" id="ci-btn">تسجيل الحضور</button>
-      </form>
-      <div id="ci-flash" role="status" aria-live="polite"></div>
-      <button type="button" class="btn ghost" id="ci-back">رجوع لصفحة الدخول</button>
-    </div>
-  </div>
-  <datalist id="club-list"></datalist>
 
   <!-- app -->
   <div id="v-shell" hidden>
@@ -416,7 +408,6 @@ body.screen .slot .nm{font-size:clamp(13px,1.4vw,20px)}
     <nav class="drawer" id="drawer" aria-label="صفحات الموقع">
       <div class="dh"><b>القائمة</b><button type="button" class="btn ghost" id="menu-close" aria-label="إغلاق القائمة" style="min-height:40px">إغلاق</button></div>
       <button type="button" class="nav" data-page="game"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l4.3 2.5v5L12 12 7.7 9.5v-5z"/><path d="M7.7 12l4.3 2.5v5L7.7 22 3.4 19.5v-5z"/><path d="M16.3 12l4.3 2.5v5L16.3 22 12 19.5v-5z"/></svg><span>لوحة اللعب<small>الأسئلة والخلايا والمباراة الحالية</small></span></button>
-      <button type="button" class="nav" data-page="attend"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg><span>تسجيل الحضور<small>الأسماء والإكسل والشهادات</small></span></button>
       <button type="button" class="nav" data-page="settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg><span>الإعدادات والدوري<small id="nav-set-sub">القرعة وشجرة التأهل والمنظمون</small></span></button>
       <button type="button" class="nav" data-page="screen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></svg><span>شاشة العرض<small>شجرة التأهل فقط للبروجكتر</small></span></button>
       <div class="foot"><span class="who" id="who"></span><button type="button" class="btn ghost" id="logout">تسجيل خروج</button></div>
@@ -446,64 +437,13 @@ body.screen .slot .nm{font-size:clamp(13px,1.4vw,20px)}
           <div class="barH t"></div><div class="barH b"></div><div class="barV l"></div><div class="barV r"></div>
           <div class="board" id="board"></div>
         </section>
+        <section class="legend" id="legend" aria-label="مفتاح ألوان الخلايا"></section>
         <section class="cats" id="cats" aria-label="فئات الأسئلة"></section>
         <section class="help" aria-label="طريقة اللعب">
           <div><b>١ · اختيار المباراة</b>اختر المباراة من القائمة فوق واضغط «ابدأ»، فتنحط أسماء الناديين وتنحسب النتيجة في شجرة الدوري تلقائيًا.</div>
           <div><b>٢ · الإجابة</b>يجاوب الفريق اللي عليه الدور؛ إذا غلط ينتقل السؤال للفريق الثاني، وإذا غلطوا الاثنين تبقى الخلية فاضية.</div>
           <div><b>٣ · الفوز</b>الأخضر يوصل الشريط الأخضر فوق بالي تحت، والبرتقالي يوصل اليمين باليسار.</div>
         </section>
-      </section>
-
-      <!-- ===== ATTENDANCE ===== -->
-      <section class="page" id="pg-attend" aria-label="تسجيل الحضور" hidden>
-        <div class="att-top">
-          <div class="card">
-            <form class="att-form" id="reg-form" novalidate>
-              <h2 style="font-size:20px">تسجيل حاضر</h2>
-              <div class="field"><label for="f-name">الاسم الثلاثي</label><input id="f-name" autocomplete="off" maxlength="60" placeholder="مثال: سارة محمد العتيبي" required></div>
-              <div class="field"><label for="f-club">النادي</label><input id="f-club" list="club-list" autocomplete="off" maxlength="60" placeholder="اختر من الأندية أو اكتب اسم النادي" required></div>
-              <div class="chips" id="club-chips" aria-label="أندية مقترحة"></div>
-              <button type="submit" class="btn" id="f-submit">تسجيل الحضور</button>
-              <div id="flash" role="status" aria-live="polite"></div>
-            </form>
-          </div>
-          <div class="card">
-            <div class="total"><span class="big num" id="total">0</span><div><strong style="font-family:var(--display)">حاضر حتى الآن</strong><div class="note" id="last-in">لا يوجد تسجيل بعد</div></div></div>
-            <div class="bars" id="bars"></div>
-            <p class="note" style="margin:14px 0 0">الحضور يقدرون يسجّلون بأنفسهم من نفس رابط الموقع: يضغطون «أنا حاضر — سجّل حضوري» في صفحة الدخول.</p>
-          </div>
-        </div>
-        <div class="card">
-          <div class="sec-h"><h2>قائمة الحضور</h2><p>مرتبة حسب وقت التسجيل</p></div>
-          <div class="toolbar"><label for="q" class="note">بحث</label><input id="q" type="search" placeholder="ابحث باسم أو نادي"></div>
-          <div class="tbl"><table><thead><tr><th>#</th><th>الاسم</th><th>النادي</th><th>وقت التسجيل</th><th></th></tr></thead><tbody id="rows"></tbody></table></div>
-          <div class="rowbar"><button type="button" class="btn ghost" id="clear-all" style="color:var(--cor)">مسح كل الحضور</button></div>
-        </div>
-        <div class="card">
-          <div class="sec-h"><h2>التصدير والشهادات</h2><p>ملف Excel بالأسماء، وملف PDF فيه شهادة لكل حاضر</p></div>
-          <div class="exp">
-            <div class="btns">
-              <button type="button" class="btn ghost" id="xlsx-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8l4 5m0-5l-4 5M14 9h3M14 13h3M8 17h9"/></svg><span>تصدير الأسماء إلى Excel<small id="xlsx-sub">0 اسم</small></span></button>
-              <button type="button" class="btn" id="pdf-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5"/><circle cx="12" cy="14" r="3"/><path d="M10.5 16.5 9.5 20l2.5-1 2.5 1-1-3.5"/></svg><span>تحميل شهادات الحضور (PDF)<small id="pdf-sub">ملف واحد · شهادة باسم كل حاضر</small></span></button>
-              <div class="prog" id="prog" hidden><div></div></div>
-              <p class="msg" id="exp-msg" role="status"></p>
-            </div>
-            <div>
-              <div class="sec-h" style="margin-bottom:10px"><h3 style="font-size:17px">معاينة الشهادة</h3><p id="prev-who">نموذج</p></div>
-              <div class="cert-box"><canvas id="cert-preview" width="1123" height="794" role="img" aria-label="معاينة شهادة الحضور"></canvas></div>
-            </div>
-          </div>
-          <h3 style="font-size:17px;margin:20px 0 12px">بيانات الشهادة</h3>
-          <div class="fgrid">
-            <div class="field"><label for="s-org">النادي المنظم</label><input id="s-org" maxlength="60"></div>
-            <div class="field"><label for="s-date">تاريخ الفعالية</label><input id="s-date" maxlength="40" placeholder="مثال: 12 ديسمبر 2026"></div>
-            <div class="field"><label for="s-s1t">صفة الموقّع الأول</label><input id="s-s1t" maxlength="40"></div>
-            <div class="field"><label for="s-s1n">اسم الموقّع الأول</label><input id="s-s1n" maxlength="50"></div>
-            <div class="field"><label for="s-s2t">صفة الموقّع الثاني</label><input id="s-s2t" maxlength="40"></div>
-            <div class="field"><label for="s-s2n">اسم الموقّع الثاني</label><input id="s-s2n" maxlength="50"></div>
-          </div>
-          <div class="rowbar"><button type="button" class="btn" id="s-save">حفظ بيانات الشهادة</button><span class="msg" id="s-msg" role="status"></span></div>
-        </div>
       </section>
 
       <!-- ===== SETTINGS ===== -->
@@ -630,14 +570,13 @@ import { getFirestore, doc, collection, getDoc, setDoc, addDoc, deleteDoc, onSna
   let fbUser = null, isAdmin = false, isOwner = false, authLoaded = false, adminOn = false, ownerOn = false, reqState = null, selfSubs = [];
   let reqs = [], admins = [];
   const sessionValid = () => !!fbUser && isAdmin;
-  function show(v){ ['boot','login','checkin','shell'].forEach(x => $('v-'+x).hidden = x!==v); }
+  function show(v){ ['boot','login','shell'].forEach(x => $('v-'+x).hidden = x!==v); }
   function route(){
     const h = decodeURIComponent(location.hash.replace('#',''));
-    if(h==='checkin'){ show('checkin'); renderClubHints(); return; }
     if(h==='screen' && authLoaded && !sessionValid()){ show('shell'); openPage('screen'); return; }
     if(!authLoaded){ show('boot'); return; }
     if(!sessionValid()){ show('login'); renderLogin(); return; }
-    show('shell'); openPage(['game','attend','settings','screen'].includes(h) ? h : 'game');
+    show('shell'); openPage(['game','settings','screen'].includes(h) ? h : 'game');
   }
   function setLg(t, err){ $('lg-msg').textContent = t; $('lg-msg').className = 'msg' + (err?' err':''); }
   function renderLogin(){
@@ -660,11 +599,9 @@ import { getFirestore, doc, collection, getDoc, setDoc, addDoc, deleteDoc, onSna
   });
   $('g-switch').addEventListener('click', () => signOut(fauth));
   $('logout').addEventListener('click', () => { closeMenu(); history.replaceState(null,'',location.pathname+location.search); signOut(fauth); });
-  $('go-checkin').addEventListener('click', () => { location.hash = 'checkin'; });
-  $('ci-back').addEventListener('click', () => { history.replaceState(null,'',location.pathname+location.search); route(); });
 
   /* ================= NAV ================= */
-  const TITLES = {game:'لوحة اللعب', attend:'تسجيل الحضور', settings:'الإعدادات والدوري', screen:'شاشة العرض'};
+  const TITLES = {game:'لوحة اللعب', settings:'الإعدادات والدوري', screen:'شاشة العرض'};
   let curPage = null;
   function openMenu(){ $('drawer').classList.add('open'); $('scrim').classList.add('open'); $('menu-btn').setAttribute('aria-expanded','true'); setTimeout(()=>{ const a = $('drawer').querySelector('[aria-current="page"]') || $('drawer').querySelector('.nav'); a && a.focus(); }, 60); }
   function closeMenu(){ if(!$('drawer').classList.contains('open')) return; $('drawer').classList.remove('open'); $('scrim').classList.remove('open'); $('menu-btn').setAttribute('aria-expanded','false'); $('menu-btn').focus({preventScroll:true}); }
@@ -675,7 +612,7 @@ import { getFirestore, doc, collection, getDoc, setDoc, addDoc, deleteDoc, onSna
     const screen = p==='screen', page = screen ? 'settings' : p;
     document.body.classList.toggle('screen', screen); $('screen-exit').hidden = !screen;
     if(!screen && document.body.classList.contains('fsmode') && page!=='game') toggleFs(false);
-    ['game','attend','settings'].forEach(x => $('pg-'+x).hidden = x!==page);
+    ['game','settings'].forEach(x => $('pg-'+x).hidden = x!==page);
     $('drawer').querySelectorAll('[data-page]').forEach(b => { if(b.dataset.page===p) b.setAttribute('aria-current','page'); else b.removeAttribute('aria-current'); });
     $('page-title').textContent = TITLES[p];
     $('who').textContent = fbUser ? (isOwner ? 'المالكة: ' : 'منظم: ') + fbUser.email : '';
@@ -683,7 +620,6 @@ import { getFirestore, doc, collection, getDoc, setDoc, addDoc, deleteDoc, onSna
     if(curPage !== p){ curPage = p; window.scrollTo(0,0); }
     if(page==='game') requestAnimationFrame(layout);
     if(page==='settings'){ renderLeague(); requestAnimationFrame(() => drawEdges(all())); }
-    if(page==='attend') renderAttend();
   }
   window.addEventListener('hashchange', route);
   $('screen-btn').addEventListener('click', () => { go('screen'); try{ document.documentElement.requestFullscreen && document.documentElement.requestFullscreen().catch(()=>{}); }catch(_){} });
@@ -963,10 +899,18 @@ import { getFirestore, doc, collection, getDoc, setDoc, addDoc, deleteDoc, onSna
   const CATS = ['جسم الإنسان ووظائفه','الأمراض والصحة العامة','الوقاية والإسعافات الأولية','الثقافة والمعلومات الصحية'], LVS = ['سهل','متوسط','صعب'];
   const other = t => t==='g' ? 'o' : 'g';
   const shuffle = a => { a = a.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; };
-  const freshBoard = () => shuffle(LETTERS).slice(0,N*N).map(ch => ({ch, t:null}));
+  const LVC = {'سهل':'e','متوسط':'m','صعب':'h'}, PTS = {'سهل':1,'متوسط':2,'صعب':3};
+  const ptsTxt = n => n===1 ? 'نقطة واحدة' : n===2 ? 'نقطتين' : n+' نقاط';
+  function levelFor(ch, want){ const has = LVS.filter(l => BANK[ch].some(q => q[3]===l)); return has.includes(want) ? want : has[Math.floor(Math.random()*has.length)]; }
+  function freshBoard(){
+    const mix = shuffle([].concat(Array(10).fill('سهل'), Array(10).fill('متوسط'), Array(5).fill('صعب')));
+    return shuffle(LETTERS).slice(0,N*N).map((ch,i) => ({ch, t:null, lv:levelFor(ch, mix[i])}));
+  }
   let gHist = [], cur = null, timer = null, tLeft = 15;
   let G = ls.get('huroof-game2');
   if(!(G && Array.isArray(G.cells) && G.cells.length===N*N && G.cells.every(c => BANK[c.ch]))) G = {cells:freshBoard(), score:{g:0,o:0}, round:1, names:{g:'الفريق الأخضر',o:'الفريق البرتقالي'}, used:{}, winner:null};
+  G.cells.forEach(c => { if(!LVC[c.lv]) c.lv = levelFor(c.ch, LVS[Math.floor(Math.random()*3)]); });
+  const calcPts = () => { const p = {g:0,o:0}; G.cells.forEach(c => { if(c.t) p[c.t] += PTS[c.lv]; }); return p; };
   G.starter = G.starter || 'g'; G.turn = G.turn || G.starter; G.used = G.used || {};
   G.cats = (G.cats && Object.keys(G.cats).every(k => CATS.includes(k))) ? G.cats : {}; G.lvs = G.lvs || {}; G.link = G.link || null; G.matchDone = !!G.matchDone;
   const gSave = () => ls.set('huroof-game2', G);
@@ -1015,10 +959,12 @@ import { getFirestore, doc, collection, getDoc, setDoc, addDoc, deleteDoc, onSna
   function syncLeague(){ if(!G.link) return; setMatch(G.link, {sa:G.score.g, sb:G.score.o, done:G.matchDone}); }
   function renderGame(){
     const path = G.winner ? findPath(G.winner) || [] : [];
-    $('board').innerHTML = G.cells.map((cl,i) => `<button type="button" class="hex ${cl.t||''} ${path.includes(i)?'win':''}" data-i="${i}" aria-label="حرف ${cl.ch}${cl.t ? ' — '+esc(G.names[cl.t]) : ''}"><span>${cl.ch}</span></button>`).join('');
+    $('board').innerHTML = G.cells.map((cl,i) => `<button type="button" class="hex lv-${LVC[cl.lv]} ${cl.t||''} ${path.includes(i)?'win':''}" data-i="${i}" aria-label="حرف ${cl.ch} · ${cl.lv} · ${ptsTxt(PTS[cl.lv])}${cl.t ? ' — '+esc(G.names[cl.t]) : ''}"><span>${cl.ch}</span><span class="pt" aria-hidden="true">${'<i></i>'.repeat(PTS[cl.lv])}</span></button>`).join('');
+    $('legend').innerHTML = LVS.map(l => `<span class="k"><span class="sw" style="--c:${({'سهل':'#F1EBFC','متوسط':'#C9B3F5','صعب':'#6D28D9'})[l]}"></span>${l} <span class="p">· ${ptsTxt(PTS[l])}</span></span>`).join('');
     layout();
     const cnt = t => G.cells.filter(c=>c.t===t).length;
-    $('pg').textContent = G.score.g; $('po').textContent = G.score.o; $('cg').textContent = cnt('g')+' خلايا'; $('co').textContent = cnt('o')+' خلايا';
+    const pt = calcPts();
+    $('pg').textContent = G.score.g; $('po').textContent = G.score.o; $('cg').textContent = `النقاط ${pt.g} · الخلايا ${cnt('g')}`; $('co').textContent = `النقاط ${pt.o} · الخلايا ${cnt('o')}`;
     $('rnd').textContent = G.round;
     if(document.activeElement!==$('ng')) $('ng').value = G.names.g; if(document.activeElement!==$('no')) $('no').value = G.names.o;
     $('ng').readOnly = $('no').readOnly = !!G.link;
@@ -1043,7 +989,7 @@ import { getFirestore, doc, collection, getDoc, setDoc, addDoc, deleteDoc, onSna
   function renderCats(){
     const n = c => Object.values(BANK).reduce((s,l)=>s+l.filter(x=>x[2]===c).length,0);
     $('cats').innerHTML = '<b>فئات الأسئلة:</b>' + CATS.map(c => `<button type="button" data-cat="${c}" aria-pressed="${G.cats[c]!==false}">${c} <span class="n num">${n(c)}</span></button>`).join('')
-      + '<span class="sep"></span><b>المستوى:</b>' + LVS.map(l => `<button type="button" data-lv="${l}" aria-pressed="${G.lvs[l]!==false}">${l}</button>`).join('');
+      ;
   }
   $('cats').addEventListener('click', e => {
     const v = e.target.closest('[data-lv]');
@@ -1051,21 +997,23 @@ import { getFirestore, doc, collection, getDoc, setDoc, addDoc, deleteDoc, onSna
     const b = e.target.closest('[data-cat]'); if(!b) return; const c = b.dataset.cat, on = G.cats[c]!==false;
     if(on && CATS.filter(x=>G.cats[x]!==false).length===1) return; G.cats[c] = !on; gSave(); renderCats();
   });
-  function pickQ(ch){
-    const list = BANK[ch], used = G.used[ch] || [];
-    let allowed = list.map((q,i)=>i).filter(i => G.cats[list[i][2]]!==false && G.lvs[list[i][3]]!==false); if(!allowed.length) allowed = list.map((q,i)=>i);
+  function pickQ(ch, lv){
+    const list = BANK[ch], used = G.used[ch] || [], ids = list.map((q,i)=>i);
+    let allowed = ids.filter(i => list[i][3]===lv && G.cats[list[i][2]]!==false);
+    if(!allowed.length) allowed = ids.filter(i => list[i][3]===lv);
+    if(!allowed.length) allowed = ids;
     let pool = allowed.filter(i => !used.includes(i)); if(!pool.length){ G.used[ch] = []; pool = allowed; }
     const k = pool[Math.floor(Math.random()*pool.length)]; G.used[ch] = (G.used[ch]||[]).concat(k); gSave(); return k;
   }
   function openCell(i){
     if(G.winner) return;
-    const cl = G.cells[i]; cur = {i, k:pickQ(cl.ch), first:G.turn, now:G.turn, done:false};
+    const cl = G.cells[i]; cur = {i, k:pickQ(cl.ch, cl.lv), first:G.turn, now:G.turn, done:false};
     document.querySelectorAll('.hex').forEach(h => h.classList.toggle('sel', +h.dataset.i===i));
     showQ(); $('ov').hidden = false; $('right').focus();
   }
   function showQ(){
     const cl = G.cells[cur.i], [q,a,cat,lv] = BANK[cl.ch][cur.k];
-    $('qcat').innerHTML = `${esc(cat)}<span class="lv lv-${lv}">${lv}</span>`;
+    $('qcat').innerHTML = `${esc(cat)}<span class="lv lv-${lv}">${lv} · ${ptsTxt(PTS[lv])}</span>`;
     $('ql').textContent = cl.ch; $('qtext').textContent = q; $('ans').textContent = a; $('ans').hidden = true;
     $('showAns').disabled = false; $('clearCell').hidden = !cl.t; $('right').disabled = $('wrong').disabled = false; $('close').textContent = 'إغلاق بدون احتساب';
     $('qmeta').textContent = cl.t ? `الخلية حاليًا لـ ${G.names[cl.t]}` : '';
@@ -1133,171 +1081,8 @@ import { getFirestore, doc, collection, getDoc, setDoc, addDoc, deleteDoc, onSna
   $('fs').addEventListener('click', () => toggleFs(!document.body.classList.contains('fsmode')));
   let rt; addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(() => { layout(); drawEdges(all()); }, 80); });
 
-  /* ================= ATTENDANCE ================= */
-  const DEFSET = {org:'[اسم النادي المنظم]', date:'[تاريخ الفعالية]', s1t:'رئيس النادي', s1n:'[الاسم]', s2t:'رئيس اللجنة المنظمة', s2n:'[الاسم]'};
-  let people = [], cset = Object.assign({}, DEFSET), acol = null, setRef = null, pendingDel = null, previewId = null;
-  const tfmt = t => { try{ return new Date(t).toLocaleTimeString('ar-SA',{hour:'numeric',minute:'2-digit'}); }catch(_){ return ''; } };
-  const sorted = () => people.slice().sort((a,b) => (a.at||0)-(b.at||0));
-  const clubColors = ['var(--cor)','var(--min)','var(--vio)','#E7B008','#3BA3FF','#FF8FC8','var(--green)','var(--orange)'];
-  function clubSuggestions(){ const t = {}; people.forEach(p => { const k = norm(p.club); if(k) t[k] = (t[k]||0)+1; });
-    return [...new Set(S.clubs.map(c=>norm(c.name)).filter(n => !/^النادي \d$/.test(n)).concat(Object.keys(t)))].slice(0,12); }
-  function renderClubHints(){
-    const sg = clubSuggestions();
-    $('club-list').innerHTML = sg.map(c => `<option value="${esc(c)}"></option>`).join('');
-    [['club-chips','f-club'],['ci-chips','ci-club']].forEach(([box,inp]) => { const curv = norm($(inp).value); $(box).innerHTML = sg.slice(0,8).map(c => `<button type="button" data-fill="${inp}" data-club="${esc(c)}" aria-pressed="${curv===c}">${esc(c)}</button>`).join(''); });
-  }
-  function renderAttend(){
-    renderClubHints();
-    if($('pg-attend').hidden) return;
-    const list = sorted(), n = list.length;
-    $('total').textContent = n;
-    $('xlsx-sub').textContent = `${n} اسم · الاسم والنادي ووقت التسجيل`;
-    $('pdf-sub').textContent = n ? `ملف واحد فيه ${n} شهادة` : 'ملف واحد · شهادة باسم كل حاضر';
-    $('xlsx-btn').disabled = $('pdf-btn').disabled = !n;
-    const last = list[n-1]; $('last-in').textContent = last ? `آخر تسجيل: ${last.name} · ${tfmt(last.at)}` : 'لا يوجد تسجيل بعد';
-    const tally = {}; list.forEach(p => { const k = norm(p.club); tally[k] = (tally[k]||0)+1; });
-    const clubs = Object.entries(tally).sort((a,b)=>b[1]-a[1]), max = clubs.length ? clubs[0][1] : 1;
-    $('bars').innerHTML = clubs.length ? clubs.map(([c,v],i) => `<div class="bar"><span class="nm">${esc(c)}</span><span class="num" style="font-weight:700">${v}</span><div class="track"><div class="fill" style="width:${Math.round(v/max*100)}%;--c:${clubColors[i%clubColors.length]}"></div></div></div>`).join('') : '<p class="note" style="margin:0">توزيع الحضور على الأندية يظهر هنا مع أول تسجيل.</p>';
-    const q = key($('q').value), shown = list.filter(p => !q || key(p.name).includes(q) || key(p.club).includes(q));
-    $('rows').innerHTML = shown.length ? shown.map(p => `<tr><td class="num">${list.indexOf(p)+1}</td><td class="who">${esc(p.name)}</td><td><span class="club">${esc(p.club)}</span></td><td class="num">${tfmt(p.at)}</td><td class="act"><button type="button" class="mini" data-prev="${esc(p.id)}">معاينة الشهادة</button> <button type="button" class="mini del" data-del="${esc(p.id)}" aria-label="حذف ${esc(p.name)}">حذف</button></td></tr>`).join('')
-      : `<tr><td colspan="5"><div class="empty"><b>${q?'ما فيه نتيجة لهذا البحث':'لا يوجد حضور بعد'}</b>${q?'جرّب اسم ثاني':'أول اسم يتسجل يظهر هنا مباشرة'}</div></td></tr>`;
-    $('clear-all').disabled = !n;
-    drawPreview();
-  }
-  function fillCertSettings(){ ['org','date','s1t','s1n','s2t','s2n'].forEach(k => { $('s-'+k).value = cset[k]||''; }); }
-  function rr(ctx,x,y,w,h,r){ ctx.beginPath(); ctx.moveTo(x+r,y); ctx.arcTo(x+w,y,x+w,y+h,r); ctx.arcTo(x+w,y+h,x,y+h,r); ctx.arcTo(x,y+h,x,y,r); ctx.arcTo(x,y,x+w,y,r); ctx.closePath(); }
-  function tileC(ctx,x,y,s,bg,fg,ch,num){ ctx.fillStyle='#1B1033'; rr(ctx,x,y+s*.07,s,s*1.18,s*.12); ctx.fill(); ctx.fillStyle=bg; rr(ctx,x,y,s,s*1.18,s*.12); ctx.fill(); ctx.fillStyle=fg; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.direction='rtl'; ctx.font=`800 ${s*.5}px Alexandria`; ctx.fillText(ch,x+s/2,y+s*.62); ctx.font=`700 ${s*.17}px Alexandria`; ctx.textAlign='right'; ctx.fillText(num,x+s*.9,y+s*.16); }
-  function fitText(ctx, text, weight, size, family, maxW){ let s=size; do{ ctx.font=`${weight} ${s}px ${family}`; if(ctx.measureText(text).width<=maxW) break; s-=2; } while(s>20); return s; }
-  function drawCert(cv, p, Sx){
-    const ctx = cv.getContext('2d'), k = cv.width/1123; ctx.save(); ctx.scale(k,k); const w=1123, h=794;
-    ctx.fillStyle='#F8F4EC'; ctx.fillRect(0,0,w,h); ctx.strokeStyle='rgba(76,29,149,.07)'; ctx.lineWidth=1;
-    for(let x=0;x<w;x+=36){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,h);ctx.stroke();} for(let y=0;y<h;y+=36){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(w,y);ctx.stroke();}
-    ctx.globalAlpha=.08; tileC(ctx,40,560,170,'#4C1D95','#fff','ح','6'); tileC(ctx,925,40,160,'#FF5A3C','#1B1033','ف','20'); ctx.globalAlpha=1;
-    ctx.strokeStyle='#1B1033'; ctx.lineWidth=4; rr(ctx,28,28,w-56,h-56,22); ctx.stroke(); ctx.strokeStyle='#4C1D95'; ctx.lineWidth=1.5; rr(ctx,40,40,w-80,h-80,16); ctx.stroke();
-    const cols=['#4C1D95','#7C3AED','#FF5A3C','#19D3A2','#4C1D95','#FF5A3C','#7C3AED','#19D3A2'], sw=(w-120)/cols.length; cols.forEach((c,i)=>{ ctx.fillStyle=c; ctx.fillRect(60+i*sw,h-62,sw,8); });
-    const s=46, gap=10, lx=w/2-(4*s+3*gap)/2;
-    [['ف','20','#7C3AED','#fff',4],['و','27','#19D3A2','#1B1033',-3],['ر','10','#FF5A3C','#1B1033',5],['ح','6','#4C1D95','#fff',-4]].forEach((t,i)=> tileC(ctx,lx+i*(s+gap),70+t[4],s,t[2],t[3],t[0],t[1]));
-    ctx.direction='rtl'; ctx.textAlign='center'; ctx.textBaseline='alphabetic';
-    ctx.fillStyle='#4C1D95'; ctx.font='800 64px Alexandria'; ctx.fillText('شهادة حضور',w/2,222);
-    ctx.fillStyle='#5B4A7A'; ctx.font='500 22px "IBM Plex Sans Arabic"'; ctx.fillText('تُمنح هذه الشهادة إلى',w/2,272);
-    const name = p ? p.name : 'اسم الحاضر'; fitText(ctx,name,800,62,'Alexandria',820); ctx.fillStyle='#1B1033'; ctx.fillText(name,w/2,352);
-    const nw = Math.min(820, ctx.measureText(name).width); ctx.fillStyle='#FF5A3C'; ctx.fillRect(w/2-nw/2,370,nw,5);
-    const club = p ? norm(p.club) : 'اسم النادي'; ctx.font='600 22px "IBM Plex Sans Arabic"'; const ct = 'من ' + club, cw = Math.min(700, ctx.measureText(ct).width)+44;
-    ctx.fillStyle='#19D3A2'; rr(ctx,w/2-cw/2,394,cw,44,22); ctx.fill(); ctx.fillStyle='#1B1033'; fitText(ctx,ct,600,22,'"IBM Plex Sans Arabic"',660); ctx.fillText(ct,w/2,424);
-    ctx.fillStyle='#1B1033'; ctx.font='500 24px "IBM Plex Sans Arabic"'; ctx.fillText('تقديرًا للحضور والمشاركة في فعالية «حروف مع المختبرات»',w/2,492);
-    ctx.fillStyle='#5B4A7A'; ctx.font='500 20px "IBM Plex Sans Arabic"'; ctx.fillText(`دوري المختبرات · ${Sx.org} · ${Sx.date}`,w/2,530);
-    const sig = (x,t,n) => { ctx.strokeStyle='#C9BDE0'; ctx.lineWidth=1.5; ctx.beginPath(); ctx.moveTo(x-120,640); ctx.lineTo(x+120,640); ctx.stroke(); ctx.fillStyle='#5B4A7A'; ctx.font='600 17px "IBM Plex Sans Arabic"'; ctx.fillText(t,x,602); ctx.fillStyle='#1B1033'; fitText(ctx,n,700,20,'Alexandria',240); ctx.fillText(n,x,672); };
-    sig(w-250,Sx.s1t,Sx.s1n); sig(250,Sx.s2t,Sx.s2n);
-    ctx.fillStyle='#4C1D95'; ctx.beginPath(); ctx.arc(w/2,640,46,0,Math.PI*2); ctx.fill(); ctx.strokeStyle='#F8F4EC'; ctx.setLineDash([4,5]); ctx.lineWidth=2; ctx.beginPath(); ctx.arc(w/2,640,38,0,Math.PI*2); ctx.stroke(); ctx.setLineDash([]);
-    ctx.fillStyle='#fff'; ctx.font='800 34px Alexandria'; ctx.textBaseline='middle'; ctx.fillText('ح',w/2,642); ctx.textBaseline='alphabetic';
-    if(p && p.seq){ ctx.fillStyle='#8E80AA'; ctx.font='500 13px "IBM Plex Sans Arabic"'; ctx.fillText(`رقم الشهادة ${p.seq}`,w/2,712); }
-    ctx.restore();
-  }
-  let fontsReady = null;
-  const ensureFonts = () => fontsReady || (fontsReady = Promise.all(['800 64px Alexandria','700 20px Alexandria','500 22px "IBM Plex Sans Arabic"','600 22px "IBM Plex Sans Arabic"'].map(f => document.fonts.load(f).catch(()=>{}))).then(()=>{}));
-  function drawPreview(){ const list = sorted(), p = list.find(x=>x.id===previewId) || list[0] || null; $('prev-who').textContent = p ? p.name : 'نموذج'; const sq = p ? Object.assign({}, p, {seq:list.indexOf(p)+1}) : null; ensureFonts().then(() => drawCert($('cert-preview'), sq, cset)); }
-  const enc = new TextEncoder();
-  const CRC = (() => { const t = new Uint32Array(256); for(let n=0;n<256;n++){ let c=n; for(let k=0;k<8;k++) c = c&1 ? 0xEDB88320^(c>>>1) : c>>>1; t[n]=c>>>0; } return t; })();
-  const crc32 = u => { let c = 0xFFFFFFFF; for(let i=0;i<u.length;i++) c = CRC[(c^u[i])&255]^(c>>>8); return (c^0xFFFFFFFF)>>>0; };
-  function zip(files){
-    const parts = [], central = []; let off = 0; const u16 = v => [v&255,(v>>>8)&255], u32 = v => [v&255,(v>>>8)&255,(v>>>16)&255,(v>>>24)&255];
-    files.forEach(f => { const name = enc.encode(f.name), data = typeof f.data==='string' ? enc.encode(f.data) : f.data, crc = crc32(data);
-      const local = new Uint8Array([...u32(0x04034b50),...u16(20),...u16(0x0800),...u16(0),...u16(0),...u16(0x21),...u32(crc),...u32(data.length),...u32(data.length),...u16(name.length),...u16(0)]);
-      parts.push(local, name, data);
-      central.push(new Uint8Array([...u32(0x02014b50),...u16(20),...u16(20),...u16(0x0800),...u16(0),...u16(0),...u16(0x21),...u32(crc),...u32(data.length),...u32(data.length),...u16(name.length),...u16(0),...u16(0),...u16(0),...u16(0),...u32(0),...u32(off)]), name);
-      off += local.length + name.length + data.length; });
-    const csize = central.reduce((s,p)=>s+p.length,0);
-    return new Blob([...parts, ...central, new Uint8Array([...u32(0x06054b50),...u16(0),...u16(0),...u16(files.length),...u16(files.length),...u32(csize),...u32(off),...u16(0)])], {type:'application/zip'});
-  }
-  const xesc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])).replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g,'');
-  function sheetXml(rows, widths){
-    const cols = `<cols>${widths.map((w,i)=>`<col min="${i+1}" max="${i+1}" width="${w}" customWidth="1"/>`).join('')}</cols>`;
-    const data = rows.map((r,ri) => `<row r="${ri+1}">${r.map((v,ci) => { const ref = String.fromCharCode(65+ci)+(ri+1), st = ri===0 ? ' s="1"' : '';
-      return typeof v==='number' ? `<c r="${ref}"${st}><v>${v}</v></c>` : `<c r="${ref}" t="inlineStr"${st}><is><t xml:space="preserve">${xesc(v)}</t></is></c>`; }).join('')}</row>`).join('');
-    return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetViews><sheetView rightToLeft="1" workbookViewId="0"><pane ySplit="1" topLeftCell="A2" activePane="bottomLeft" state="frozen"/></sheetView></sheetViews>${cols}<sheetData>${data}</sheetData></worksheet>`;
-  }
-  function xlsx(sheets){
-    const ns = 'http://schemas.openxmlformats.org';
-    return zip([
-      {name:'[Content_Types].xml', data:`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="${ns}/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/>${sheets.map((s,i)=>`<Override PartName="/xl/worksheets/sheet${i+1}.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>`).join('')}</Types>`},
-      {name:'_rels/.rels', data:`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="${ns}/package/2006/relationships"><Relationship Id="rId1" Type="${ns}/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>`},
-      {name:'xl/workbook.xml', data:`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><workbook xmlns="${ns}/spreadsheetml/2006/main" xmlns:r="${ns}/officeDocument/2006/relationships"><bookViews><workbookView/></bookViews><sheets>${sheets.map((s,i)=>`<sheet name="${xesc(s.name)}" sheetId="${i+1}" r:id="rId${i+1}"/>`).join('')}</sheets></workbook>`},
-      {name:'xl/_rels/workbook.xml.rels', data:`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="${ns}/package/2006/relationships">${sheets.map((s,i)=>`<Relationship Id="rId${i+1}" Type="${ns}/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet${i+1}.xml"/>`).join('')}<Relationship Id="rId${sheets.length+1}" Type="${ns}/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>`},
-      {name:'xl/styles.xml', data:`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><styleSheet xmlns="${ns}/spreadsheetml/2006/main"><fonts count="2"><font><sz val="11"/><name val="Arial"/></font><font><b/><sz val="11"/><color rgb="FFFFFFFF"/><name val="Arial"/></font></fonts><fills count="3"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill><fill><patternFill patternType="solid"><fgColor rgb="FF4C1D95"/><bgColor indexed="64"/></patternFill></fill></fills><borders count="1"><border><left/><right/><top/><bottom/><diagonal/></border></borders><cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs><cellXfs count="2"><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/><xf numFmtId="0" fontId="1" fillId="2" borderId="0" xfId="0" applyFont="1" applyFill="1"/></cellXfs><cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles></styleSheet>`}
-    ].concat(sheets.map((s,i) => ({name:`xl/worksheets/sheet${i+1}.xml`, data:sheetXml(s.rows, s.widths)}))));
-  }
-  async function pdfFromJpegs(jpegs, wPt, hPt){
-    const chunks = [], offsets = []; let pos = 0; const add = x => { const u = typeof x==='string' ? enc.encode(x) : x; chunks.push(u); pos += u.length; };
-    const n = jpegs.length, pageIds = []; add('%PDF-1.4\n%\xE2\xE3\xCF\xD3\n');
-    const obj = (id, body) => { offsets[id] = pos; add(`${id} 0 obj\n`); body(); add('\nendobj\n'); };
-    for(let i=0;i<n;i++) pageIds.push(3 + i*3);
-    obj(1, () => add('<< /Type /Catalog /Pages 2 0 R >>')); obj(2, () => add(`<< /Type /Pages /Kids [${pageIds.map(id=>id+' 0 R').join(' ')}] /Count ${n} >>`));
-    for(let i=0;i<n;i++){ const p = 3+i*3, img = p+1, cs = p+2, j = jpegs[i];
-      obj(p, () => add(`<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${wPt} ${hPt}] /Resources << /XObject << /Im${i} ${img} 0 R >> >> /Contents ${cs} 0 R >>`));
-      obj(img, () => { add(`<< /Type /XObject /Subtype /Image /Width ${j.w} /Height ${j.h} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ${j.bytes.length} >>\nstream\n`); add(j.bytes); add('\nendstream'); });
-      const content = `q ${wPt} 0 0 ${hPt} 0 0 cm /Im${i} Do Q`; obj(cs, () => add(`<< /Length ${content.length} >>\nstream\n${content}\nendstream`)); }
-    const total = 3 + n*3, xref = pos; let x = `xref\n0 ${total}\n0000000000 65535 f \n`; for(let id=1; id<total; id++) x += String(offsets[id]).padStart(10,'0') + ' 00000 n \n';
-    add(x + `trailer\n<< /Size ${total} /Root 1 0 R >>\nstartxref\n${xref}\n%%EOF`); return new Blob(chunks, {type:'application/pdf'});
-  }
-  const canvasJpeg = (cv, q) => new Promise((res, rej) => cv.toBlob(b => b ? b.arrayBuffer().then(a => res({bytes:new Uint8Array(a), w:cv.width, h:cv.height})) : rej(new Error('jpeg')), 'image/jpeg', q));
-  function setExp(t, err){ $('exp-msg').textContent = t; $('exp-msg').className = 'msg'+(err?' err':''); }
-  async function saveFile(filename, data){
-    try{ const url = URL.createObjectURL(data), a = document.createElement('a'); a.href = url; a.download = filename; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 4000); setExp('تم تحميل الملف: ' + filename); }
-    catch(_){ setExp('ما قدرت أجهز الملف. جرّب مرة ثانية.', true); }
-  }
-  $('xlsx-btn').addEventListener('click', async () => {
-    const list = sorted(); const fmt = t => { try{ const d = new Date(t); return d.toLocaleDateString('en-CA') + ' ' + d.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}); }catch(_){ return ''; } };
-    const rows = [['م','الاسم','النادي','وقت التسجيل']].concat(list.map((p,i) => [i+1, p.name, norm(p.club), fmt(p.at)]));
-    const tally = {}; list.forEach(p => { const k = norm(p.club); tally[k]=(tally[k]||0)+1; });
-    const rows2 = [['النادي','عدد الحضور']].concat(Object.entries(tally).sort((a,b)=>b[1]-a[1])).concat([['المجموع', list.length]]);
-    try{ await saveFile('حضور حروف مع المختبرات.xlsx', xlsx([{name:'الحضور', rows, widths:[6,34,28,20]}, {name:'حسب النادي', rows:rows2, widths:[32,14]}])); }catch(_){ setExp('ما قدرت أجهز ملف Excel. جرّب مرة ثانية.', true); }
-  });
-  let busy = false;
-  $('pdf-btn').addEventListener('click', async () => {
-    if(busy) return; const list = sorted(); if(!list.length) return;
-    busy = true; $('pdf-btn').disabled = true; $('prog').hidden = false; const bar = $('prog').firstElementChild;
-    try{ await ensureFonts(); const cv = document.createElement('canvas'); cv.width = 2246; cv.height = 1588; const imgs = [];
-      for(let i=0;i<list.length;i++){ setExp(`جاري تجهيز الشهادة ${i+1} من ${list.length}…`); bar.style.width = ((i+1)/list.length*100)+'%'; drawCert(cv, Object.assign({}, list[i], {seq:i+1}), cset); imgs.push(await canvasJpeg(cv, 0.9)); }
-      await saveFile(`شهادات حضور حروف مع المختبرات (${list.length}).pdf`, await pdfFromJpegs(imgs, 841.89, 595.28));
-    }catch(_){ setExp('صار خطأ أثناء تجهيز الشهادات. جرّب مرة ثانية.', true); }
-    busy = false; $('pdf-btn').disabled = false; $('prog').hidden = true; bar.style.width = '0';
-  });
-  function flashIn(box, kind, html){ $(box).innerHTML = `<div class="flash ${kind}">${html}</div>`; clearTimeout(flashIn[box]); flashIn[box] = setTimeout(()=>{ $(box).innerHTML=''; }, 6000); }
-  async function register(nameEl, clubEl, btn, box){
-    const name = norm($(nameEl).value), club = norm($(clubEl).value);
-    if(name.split(' ').length < 2){ flashIn(box,'warn','اكتب الاسم الثنائي أو الثلاثي، لأنه بيطلع على الشهادة.'); $(nameEl).focus(); return; }
-    if(!club){ flashIn(box,'warn','اختر النادي أو اكتب اسمه.'); $(clubEl).focus(); return; }
-    if(isAdmin && people.some(p => key(p.name)===key(name))){ flashIn(box,'warn',`«${esc(name)}» مسجّل من قبل.`); return; }
-    const rec = {name:name.slice(0,60), club:club.slice(0,60), at:Date.now()}; $(btn).disabled = true;
-    try{
-      if(!fdb) throw new Error('no db');
-      const ref = await addDoc(collection(fdb,'attendees'), {name:rec.name, club:rec.club, at:rec.at}); rec.id = ref.id;
-      flashIn(box,'ok', `تم تسجيل حضور ${esc(name)} · ${esc(club)}`); $(nameEl).value = ''; $(clubEl).value = ''; renderAttend(); $(nameEl).focus();
-    }catch(e){ people = people.filter(p => p.id !== rec.id); renderAttend(); flashIn(box,'warn', e && e.code==='permission-denied' ? 'البيانات غير مقبولة. تأكد من الاسم والنادي.' : 'ما انحفظ التسجيل. تأكد من الاتصال وجرّب مرة ثانية.'); }
-    $(btn).disabled = false;
-  }
-  $('reg-form').addEventListener('submit', e => { e.preventDefault(); register('f-name','f-club','f-submit','flash'); });
-  $('ci-form').addEventListener('submit', e => { e.preventDefault(); register('ci-name','ci-club','ci-btn','ci-flash'); });
-  document.addEventListener('click', async e => {
-    const ch = e.target.closest('[data-fill]'); if(ch){ $(ch.dataset.fill).value = ch.dataset.club; renderClubHints(); return; }
-    const pv = e.target.closest('[data-prev]'); if(pv){ previewId = pv.dataset.prev; drawPreview(); $('cert-preview').scrollIntoView({behavior:'smooth', block:'center'}); return; }
-    const d = e.target.closest('[data-del]'); if(d){ const id = d.dataset.del, nm = (people.find(p=>p.id===id)||{}).name || '';
-      if(!await ask('حذف الاسم؟', `«${nm}» بينحذف من قائمة الحضور، وما بتطلع له شهادة.`, 'نعم، احذف')) return; people = people.filter(p=>p.id!==id); renderAttend(); if(fdb){ try{ await deleteDoc(doc(fdb,'attendees',id)); }catch(_){ setExp('ما انحذف الاسم. جرّب مرة ثانية.', true); } } }
-  });
-  $('q').addEventListener('input', renderAttend);
-  $('clear-all').addEventListener('click', async () => {
-    const list = people.slice(); if(!list.length) return;
-    if(!await ask('مسح كل الحضور؟', `بتنحذف كل الأسماء (${list.length} اسم) نهائيًا، وما تقدرين ترجعينها. صدّري ملف Excel قبل إذا تحتاجينها.`, 'نعم، امسح الكل')) return;
-    people = []; renderAttend();
-    if(fdb){ let fail = 0; for(const p of list){ try{ await deleteDoc(doc(fdb,'attendees',p.id)); }catch(_){ fail++; } } if(fail) setExp(`ما انحذف ${fail} اسم. جرّب مرة ثانية.`, true); }
-  });
-  $('s-save').addEventListener('click', async () => {
-    cset = {}; ['org','date','s1t','s1n','s2t','s2n'].forEach(k => { cset[k] = norm($('s-'+k).value) || DEFSET[k]; }); drawPreview();
-    if(isAdmin){ try{ await setDoc(doc(fdb,'certs','main'), cset); $('s-msg').textContent = 'تم الحفظ'; }catch(_){ $('s-msg').textContent = 'ما انحفظ. جرّب مرة ثانية.'; } } else $('s-msg').textContent = 'تم التحديث (وضع تجريبي)';
-  });
-
   /* ================= BOOT ================= */
-  renderCats(); renderGame(); fillCertSettings(); route();
+  renderCats(); renderGame(); route();
   if(!configured){ authLoaded = true; route(); return; }
   let firstSnap = true;
   onSnapshot(doc(fdb,'league','state'), snap => {
@@ -1305,12 +1090,10 @@ import { getFirestore, doc, collection, getDoc, setDoc, addDoc, deleteDoc, onSna
       if(firstSnap) lastReveal = S.reveal;
       else if(S.reveal && S.reveal!==lastReveal){ lastReveal = S.reveal; if(!$('v-shell').hidden) playReveal(); }
       else if(!S.reveal) lastReveal = null; }
-    firstSnap = false; renderLeague(); renderGameMatchList(); renderClubHints();
+    firstSnap = false; renderLeague(); renderGameMatchList();
   }, () => setSetupMsg('انقطع التحديث المباشر. حدّث الصفحة.', true));
   function startAdmin(){
     if(adminOn) return; adminOn = true;
-    onSnapshot(collection(fdb,'attendees'), snap => { people = snap.docs.map(d => { const x = d.data()||{}; return {id:d.id, name:norm(x.name).slice(0,60), club:norm(x.club).slice(0,60)||'—', at:Number(x.at)||0}; }).filter(p=>p.name); renderAttend(); }, () => {});
-    onSnapshot(doc(fdb,'certs','main'), snap => { if(snap.exists()){ cset = Object.assign({}, DEFSET, snap.data()); fillCertSettings(); drawPreview(); } }, () => {});
   }
   function startOwner(){
     if(ownerOn) return; ownerOn = true;
