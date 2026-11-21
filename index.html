@@ -128,9 +128,13 @@ main{max-width:1240px;margin:0 auto;padding:18px max(16px,env(safe-area-inset-ri
 @media (max-width:640px){.score{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.mid{grid-column:1/-1;order:-1;flex-direction:row;gap:10px}.team .pts{font-size:30px}}
 .stage{position:relative;background:var(--card);border:2px solid var(--ink);border-radius:26px;box-shadow:0 8px 0 var(--shadow);padding:clamp(26px,4vw,44px);display:flex;justify-content:center}
 .barH,.barV{position:absolute;border-radius:8px}
-.barH{left:12%;right:12%;height:12px;background:var(--green)}
+.barH{left:12%;right:12%;height:12px;background:var(--vcol,var(--green))}
 .barH.t{top:12px} .barH.b{bottom:12px}
-.barV{top:14%;bottom:14%;width:12px;background:var(--orange)}
+.barV{top:14%;bottom:14%;width:12px;background:var(--hcol,var(--orange))}
+.dirbar{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:8px 14px;border:2px dashed var(--line);border-radius:16px;padding:10px 14px;font-weight:700;text-align:center}
+.dirbar .d{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:3px 12px}
+.dirbar .d.g{background:var(--green);color:#0B2B1F}.dirbar .d.o{background:var(--orange);color:#2B1300}
+.dirbar .btn{min-height:40px}
 .barV.l{left:12px} .barV.r{right:12px}
 .board{position:relative;direction:ltr}
 .hex{position:absolute;width:var(--w);height:calc(var(--w)*1.1547);clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);background:var(--ink);border:0;padding:0;display:flex;align-items:center;justify-content:center;transition:transform .15s}
@@ -428,11 +432,12 @@ body.screen .slot .nm{font-size:clamp(13px,1.4vw,20px)}
         </div>
         <div class="matchbar" id="matchbar" hidden></div>
         <section class="score" aria-label="النتيجة">
-          <div class="team g"><button type="button" class="sw" aria-label="إعطاء الدور للفريق الأخضر"></button><div class="who"><input id="ng" maxlength="30" aria-label="اسم الفريق الأخضر"><small>يوصل من فوق لتحت</small><em class="tb">الدور عليه</em></div><div><div class="pts num" id="pg">0</div><div class="cells num" id="cg">0 خلايا</div></div></div>
+          <div class="team g"><button type="button" class="sw" aria-label="إعطاء الدور للفريق الأخضر"></button><div class="who"><input id="ng" maxlength="30" aria-label="اسم الفريق الأخضر"><small id="dg">يوصل من فوق لتحت</small><em class="tb">الدور عليه</em></div><div><div class="pts num" id="pg">0</div><div class="cells num" id="cg">0 خلايا</div></div></div>
           <div class="mid"><b>الجولة</b><span class="num" id="rnd">1</span><b id="bo"></b></div>
-          <div class="team o"><button type="button" class="sw" aria-label="إعطاء الدور للفريق البرتقالي"></button><div class="who"><input id="no" maxlength="30" aria-label="اسم الفريق البرتقالي"><small>يوصل من اليمين لليسار</small><em class="tb">الدور عليه</em></div><div><div class="pts num" id="po">0</div><div class="cells num" id="co">0 خلايا</div></div></div>
+          <div class="team o"><button type="button" class="sw" aria-label="إعطاء الدور للفريق البرتقالي"></button><div class="who"><input id="no" maxlength="30" aria-label="اسم الفريق البرتقالي"><small id="do">يوصل من اليمين لليسار</small><em class="tb">الدور عليه</em></div><div><div class="pts num" id="po">0</div><div class="cells num" id="co">0 خلايا</div></div></div>
         </section>
         <div id="winbox"></div>
+        <div class="dirbar" id="dirbar" hidden></div>
         <section class="stage" aria-label="لوحة الحروف">
           <div class="barH t"></div><div class="barH b"></div><div class="barV l"></div><div class="barV r"></div>
           <div class="board" id="board"></div>
@@ -442,7 +447,7 @@ body.screen .slot .nm{font-size:clamp(13px,1.4vw,20px)}
         <section class="help" aria-label="طريقة اللعب">
           <div><b>١ · اختيار المباراة</b>اختر المباراة من القائمة فوق واضغط «ابدأ»، فتنحط أسماء الناديين وتنحسب النتيجة في شجرة الدوري تلقائيًا.</div>
           <div><b>٢ · الإجابة</b>يجاوب الفريق اللي عليه الدور؛ إذا غلط ينتقل السؤال للفريق الثاني، وإذا غلطوا الاثنين تبقى الخلية فاضية.</div>
-          <div><b>٣ · الفوز</b>الأخضر يوصل الشريط الأخضر فوق بالي تحت، والبرتقالي يوصل اليمين باليسار.</div>
+          <div><b>٣ · الفوز</b>قبل كل جولة يتفق الفريقين شفهيًا مين يوصل فوق ⟷ تحت ومين يمين ⟷ يسار، والمقدّم يضبطها بزر «بدّل الاتجاه». كل فريق يفوز إذا وصل بين الشريطين اللي بلونه.</div>
         </section>
       </section>
 
@@ -917,8 +922,9 @@ import { getFirestore, doc, collection, getDoc, setDoc, addDoc, deleteDoc, onSna
   const idx = (r,c) => r*N+c;
   function nbrs(r,c){ const d = r%2 ? [[-1,0],[-1,1],[0,-1],[0,1],[1,0],[1,1]] : [[-1,-1],[-1,0],[0,-1],[0,1],[1,-1],[1,0]]; return d.map(([a,b])=>[r+a,c+b]).filter(([a,b])=>a>=0&&a<N&&b>=0&&b<N); }
   function findPath(team){
-    const starts = [], isEnd = team==='g' ? (r)=>r===N-1 : (r,c)=>c===N-1;
-    for(let k=0;k<N;k++){ const [r,c] = team==='g' ? [0,k] : [k,0]; if(G.cells[idx(r,c)].t===team) starts.push([r,c]); }
+    const vert = (G.vert||'g')===team;
+    const starts = [], isEnd = vert ? (r)=>r===N-1 : (r,c)=>c===N-1;
+    for(let k=0;k<N;k++){ const [r,c] = vert ? [0,k] : [k,0]; if(G.cells[idx(r,c)].t===team) starts.push([r,c]); }
     const prev = new Map(), q = []; starts.forEach(s => { prev.set(idx(...s), null); q.push(s); });
     while(q.length){ const [r,c] = q.shift(); if(isEnd(r,c)){ const path=[]; let k=idx(r,c); while(k!==null){ path.push(k); k=prev.get(k); } return path; }
       for(const [a,b] of nbrs(r,c)){ const k=idx(a,b); if(!prev.has(k) && G.cells[k].t===team){ prev.set(k, idx(r,c)); q.push([a,b]); } } }
@@ -963,7 +969,14 @@ import { getFirestore, doc, collection, getDoc, setDoc, addDoc, deleteDoc, onSna
     $('legend').innerHTML = LVS.map(l => `<span class="k"><span class="sw" style="--c:${({'سهل':'#F1EBFC','متوسط':'#C9B3F5','صعب':'#6D28D9'})[l]}"></span>${l} <span class="p">· ${ptsTxt(PTS[l])}</span></span>`).join('');
     layout();
     const cnt = t => G.cells.filter(c=>c.t===t).length;
-    const pt = calcPts();
+    const pt = calcPts(), V = G.vert||'g', H = other(V), col = t => t==='g' ? 'var(--green)' : 'var(--orange)';
+    const stg = document.querySelector('.stage'); stg.style.setProperty('--vcol', col(V)); stg.style.setProperty('--hcol', col(H));
+    const TXT = {v:'يوصل من فوق لتحت', h:'يوصل من اليمين لليسار'};
+    $('dg').textContent = V==='g' ? TXT.v : TXT.h; $('do').textContent = V==='o' ? TXT.v : TXT.h;
+    const fresh = !G.winner && !G.cells.some(c => c.t);
+    $('dirbar').hidden = !fresh;
+    if(fresh) $('dirbar').innerHTML = `<span>قبل ما تبدأ الجولة، اتفقوا على الاتجاه:</span><span class="d ${V}">${esc(G.names[V])} ↕ فوق ⟷ تحت</span><span class="d ${H}">${esc(G.names[H])} ↔ يمين ⟷ يسار</span><button type="button" class="btn ghost" id="swapDir">⇄ بدّل الاتجاه</button>`;
+    const sd = $('swapDir'); if(sd) sd.addEventListener('click', () => { G.vert = other(G.vert||'g'); gSave(); renderGame(); });
     $('pg').textContent = G.score.g; $('po').textContent = G.score.o; $('cg').textContent = `النقاط ${pt.g} · الخلايا ${cnt('g')}`; $('co').textContent = `النقاط ${pt.o} · الخلايا ${cnt('o')}`;
     $('rnd').textContent = G.round;
     if(document.activeElement!==$('ng')) $('ng').value = G.names.g; if(document.activeElement!==$('no')) $('no').value = G.names.o;
